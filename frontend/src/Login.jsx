@@ -1,25 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import logo from './assets/tiktok.png'; // Ensure this path is correct
+import './login.css';
+import img from './assets/background.jpg';
 
 import 'bootstrap/dist/css/bootstrap.css';
-
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
-import logo from './assets/ncf_logo.png';
 
 import { API_ENDPOINT } from './Api.jsx';
 
 function LoginSignup() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
-  const [isSignup, setIsSignup] = useState(false); // Toggle between login and signup
+  const [isSignup, setIsSignup] = useState(false);
 
-  /* Verify if User In Session in LocalStorage */
+  // Verify if user is in session
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -34,17 +35,20 @@ function LoginSignup() {
         navigate('/login');
       }
     };
-
     fetchUser();
   }, [navigate]);
 
-  /* Login State and Methods */
+  // Login state
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    if (!username || !password) {
+      setError('All fields are required.');
+      return;
+    }
 
     try {
       const response = await axios.post(`${API_ENDPOINT}/auth/login`, {
@@ -60,11 +64,15 @@ function LoginSignup() {
     }
   };
 
-  /* Signup State and Methods */
+  // Signup state
   const [fullname, setFullname] = useState('');
 
   const handleSignup = async (e) => {
     e.preventDefault();
+    if (!fullname || !username || !password) {
+      setError('All fields are required.');
+      return;
+    }
 
     try {
       const response = await axios.post(`${API_ENDPOINT}/auth/register`, {
@@ -83,32 +91,37 @@ function LoginSignup() {
 
   return (
     <>
-      <Navbar bg="success" data-bs-theme="dark">
+      {/* Navbar */}
+      <Navbar className="custom-navbar py-3">
         <Container>
-          <Navbar.Brand href="#home">Naga College Foundation, Inc.</Navbar.Brand>
+          <Navbar.Brand href="#home" className="text-white fw-bold">
+            <img src={logo} alt="Tiktok Logo" className="navbar-logo" />
+            TOKTOK
+          </Navbar.Brand>
         </Container>
       </Navbar>
-      <br /> <br /> <br /> <br /> <br /> <br />
-      <Container>
+
+      <div>
+  <img className="background-image" src={img} alt="Background Image" />
+</div>
+
+
+      {/* Login/Signup Form */}
+      <Container className="mt-5">
         <Row className="justify-content-md-center">
           <Col md={4}>
             <div className="login_signup_form">
               <div className="container">
-                <div className="login-logo" style={{ textAlign: 'center' }}>
-                  <img src={logo} width="38%" alt="Logo" />
-                </div>
-                <center>
-                  MCFi: A Proposed Enrollment Systems <br /> Using Serverless Computing
-                </center>
-                &nbsp;
-                <div className="card">
+                <h2 className="login-title">
+                  {isSignup ? 'Signup to Toktok' : 'Login to Toktok'}
+                </h2>
+                <div className="card mt-3">
                   <div className="card-body login-card-body">
                     {isSignup ? (
                       <Form onSubmit={handleSignup}>
                         <Form.Group controlId="formFullname">
-                          <Form.Label>Full Name:</Form.Label>
+                          <Form.Label>Full Name</Form.Label>
                           <Form.Control
-                            className="form-control-sm rounded-0"
                             type="text"
                             placeholder="Enter Full Name"
                             value={fullname}
@@ -116,10 +129,9 @@ function LoginSignup() {
                             required
                           />
                         </Form.Group>
-                        <Form.Group controlId="formUsername">
-                          <Form.Label>Username:</Form.Label>
+                        <Form.Group controlId="formUsername" className="mt-3">
+                          <Form.Label>Username</Form.Label>
                           <Form.Control
-                            className="form-control-sm rounded-0"
                             type="text"
                             placeholder="Enter Username"
                             value={username}
@@ -127,10 +139,9 @@ function LoginSignup() {
                             required
                           />
                         </Form.Group>
-                        <Form.Group controlId="formPassword">
-                          <Form.Label>Password:</Form.Label>
+                        <Form.Group controlId="formPassword" className="mt-3">
+                          <Form.Label>Password</Form.Label>
                           <Form.Control
-                            className="form-control-sm rounded-0"
                             type="password"
                             placeholder="Enter Password"
                             value={password}
@@ -138,25 +149,19 @@ function LoginSignup() {
                             required
                           />
                         </Form.Group>
-                        <br />
-                        <Form.Group controlId="formsButton">
-                          {error && <p style={{ color: 'red' }}>{error}</p>}
-                          <Button
-                            variant="success"
-                            className="btn btn-block bg-custom btn-flat rounded-0"
-                            size="sm"
-                            type="submit"
-                          >
-                            Signup
-                          </Button>
-                        </Form.Group>
+                        <Button
+                          variant="success"
+                          type="submit"
+                          className="btn btn-block mt-3"
+                        >
+                          Signup
+                        </Button>
                       </Form>
                     ) : (
                       <Form onSubmit={handleLogin}>
                         <Form.Group controlId="formUsername">
-                          <Form.Label>Username:</Form.Label>
+                          <Form.Label>Username</Form.Label>
                           <Form.Control
-                            className="form-control-sm rounded-0"
                             type="text"
                             placeholder="Enter Username"
                             value={username}
@@ -164,10 +169,9 @@ function LoginSignup() {
                             required
                           />
                         </Form.Group>
-                        <Form.Group controlId="formPassword">
-                          <Form.Label>Password:</Form.Label>
+                        <Form.Group controlId="formPassword" className="mt-3">
+                          <Form.Label>Password</Form.Label>
                           <Form.Control
-                            className="form-control-sm rounded-0"
                             type="password"
                             placeholder="Enter Password"
                             value={password}
@@ -175,20 +179,16 @@ function LoginSignup() {
                             required
                           />
                         </Form.Group>
-                        <br />
-                        <Form.Group controlId="formsButton">
-                          {error && <p style={{ color: 'red' }}>{error}</p>}
-                          <Button
-                            variant="success"
-                            className="btn btn-block bg-custom btn-flat rounded-0"
-                            size="sm"
-                            type="submit"
-                          >
-                            Login
-                          </Button>
-                        </Form.Group>
+                        <Button
+                          variant="success"
+                          type="submit"
+                          className="btn btn-block mt-3"
+                        >
+                          Login
+                        </Button>
                       </Form>
                     )}
+                    {error && <p className="text-danger mt-3">{error}</p>}
                     <div className="mt-3 text-center">
                       <Button
                         variant="link"
@@ -196,7 +196,7 @@ function LoginSignup() {
                       >
                         {isSignup
                           ? 'Already have an account? Login'
-                          : "Don't have an account? Signup"}
+                          : "New to Tiktok? Signup"}
                       </Button>
                     </div>
                   </div>
@@ -206,6 +206,11 @@ function LoginSignup() {
           </Col>
         </Row>
       </Container>
+
+      {/* Footer */}
+      <footer className="footer text-center mt-5">
+        <p>© 2024 Tiktok. All rights reserved.</p>
+      </footer>
     </>
   );
 }

@@ -28,6 +28,7 @@ function App() {
       <Row>  
         <Col md={12}>  
           <Routes>  
+            
             <Route path="/" element={<Login />} />  
             <Route path="/login" element={<Login />} />  
             <Route path="/dashboard" element={<Dashboard />} />  

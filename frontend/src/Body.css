@@ -1,0 +1,91 @@
+/* Layout for Main Container */
+.main-container {
+    display: flex;
+    height: 100vh; /* Full viewport height */
+    margin: 0; /* Remove any default margin */
+  }
+  
+  /* Sidebar Styling */
+  .sidebar {
+    width: 220px; /* Sidebar width */
+    padding: 20px; /* Internal spacing */
+    background-color: #fff; /* Clean white background */
+    box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1); /* Soft shadow for separation */
+    height: 100vh; /* Full height sidebar */
+    position: static; /* Fix the sidebar to the left side */
+    top: 0;
+    left: 0;
+    border-right: 3px solid #ddd; /* Subtle border to the right of the sidebar */
+    overflow-y: auto; /* Allows for scrolling if content overflows */
+    margin-right: 0; /* Removes any margin on the right side */
+  }
+  
+  /* Sidebar Links Styling */
+  .sidebar h2 {
+    margin: 15px 0; /* Adds vertical spacing between items */
+    font-weight: bold; /* Bold text for prominence */
+    color: #444; /* Slightly darker text color for better contrast */
+    font-size: 1rem; /* Standard readable size */
+    transition: all 0.3s ease; /* Smooth hover effects */
+    cursor: pointer; /* Indicates interactivity */
+    line-height: 1.8; /* Proper spacing between lines */
+    padding: 12px 20px; /* Adds internal spacing for a cleaner look */
+    border-radius: 10px; /* Rounded edges for a modern touch */
+    background-color: #f9f9f9; /* Subtle background for items */
+    margin-left: -20px; /* Prevents the items from being too close to the sidebar border */
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1); /* Soft shadow to make each item stand out */
+  }
+  
+  /* Sidebar Hover Effects */
+  .sidebar h2:hover {
+    color: #007bff; /* Blue highlight on hover */
+    background-color: #e6f0ff; /* Light blue background on hover */
+    transform: translateX(5px); /* Slight movement to the right */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Adds a stronger shadow effect */
+  }
+  
+  /* Main Content Section */
+  .content {
+    display: flex;
+    justify-content: center; /* Centers the video horizontally */
+    align-items: center; /* Centers the video vertically */
+    padding: 20px; /* Adds spacing inside the content area */
+    width: calc(100% - 220px); /* Takes the remaining width, adjusting for sidebar */
+    background-color: #f8f9fa; /* Light gray background for content */
+    height: 100vh; /* Full height content */
+    overflow-y: auto; /* Allows scrolling for content */
+    margin-right: 0; /* Removes any margin on the right */
+  }
+  
+  /* Video Container */
+  .video-container {
+    position: relative; /* To position the pause icon */
+    display: inline-block;
+  }
+  
+  /* Video Styling */
+  .dharman {
+    width: 90%; /* Adjust the width to 90% of the parent container */
+    max-width: 400px; /* Set a max-width to avoid the video getting too large */
+    height: auto; /* Maintain aspect ratio */
+    aspect-ratio: 9 / 16; /* Set the aspect ratio to mimic TikTok's portrait video format */
+    border-radius: 10px; /* Optional: for rounded corners on the video */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* Optional: adds shadow for a modern look */
+  }
+  
+  /* Pause Icon Styling */
+  .pause-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 50px;
+    color: white;
+    pointer-events: none; /* Prevents it from interfering with clicks */
+  }
+  
+  /* Paused state styling */
+  .paused .dharman {
+    opacity: 0.7; /* Dim the video when paused */
+  }
+  
