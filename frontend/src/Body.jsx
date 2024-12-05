@@ -1,10 +1,17 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import './Body.css';
 import dharman from './assets/dharman.mp4';
+import heart from './assets/heart.png';
+import comment from './assets/comment.png';
+import favorite from './assets/bookmark.png';
+import share from './assets/share.png';
 
 export function Body() {
-  const videoRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(true);  // Track if video is playing
+  const [isCommenting, setIsCommenting] = useState(false);  // Track if comment bar is visible
+  const [likeCount, setLikeCount] = useState(0);  // Track like count
+  const [commentCount, setCommentCount] = useState(0);  // Track comment count
+  const videoRef = useRef(null);
 
   // Toggle play/pause state when the video is clicked
   const handleVideoClick = () => {
@@ -18,15 +25,21 @@ export function Body() {
     }
   };
 
-  useEffect(() => {
-    const videoElement = videoRef.current;
-    videoElement.loop = true;  // Make sure the video loops
-    if (isPlaying) {
-      videoElement.play();  // Play the video if it's in the "playing" state
-    } else {
-      videoElement.pause();  // Pause the video if it's in the "paused" state
-    }
-  }, [isPlaying]);
+  const handleLike = () => {
+    setLikeCount(likeCount + 1);  // Increment like count
+  };
+
+  const handleCommentToggle = () => {
+    setIsCommenting(!isCommenting);  // Toggle visibility of the comment input field
+  };
+
+  const handleBookmark = () => {
+    // Logic for bookmark action (you can add your own functionality here)
+  };
+
+  const handleShare = () => {
+    // Logic for share action (you can add your own functionality here)
+  };
 
   return (
     <div className="main-container">
@@ -38,24 +51,20 @@ export function Body() {
         <h2>Profile</h2>
       </div>
 
-      <div className="divider"></div> {/* Optional divider */}
+      <div className="divider"></div>
 
       <div className="content">
-        <div 
-          className={`video-container ${isPlaying ? '' : 'paused'}`}  // Add paused class when video is paused
-          onClick={handleVideoClick}
-        >
+        <div className="video-container" onClick={handleVideoClick}>
           <video 
             className="dharman" 
             ref={videoRef} 
             autoPlay 
             loop 
-            muted={false}  // The video will play with sound
+            muted={false}
           >
             <source src={dharman} type="video/mp4" />
             Your browser does not support the video tag.
           </video>
-          {/* Show pause icon when video is paused */}
           {!isPlaying && (
             <div className="pause-icon">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="50" height="50">
@@ -65,7 +74,31 @@ export function Body() {
           )}
         </div>
 
-        {/* No control buttons anymore */}
+        {/* Comment Bar (conditionally rendered beside video) */}
+        {isCommenting && (
+          <div className="comment-bar">
+            <textarea placeholder="Add a comment..." rows="3"></textarea>
+            <button onClick={() => setCommentCount(commentCount + 1)}>Post Comment</button>
+          </div>
+        )}
+
+        {/* Controls (Heart, Comment, Bookmark, Share) */}
+        <div className="controls">
+          <div className="control-icon heart-icon" onClick={handleLike}>
+            <img src={heart} alt="heart" />
+            <span>{likeCount}</span>
+          </div>
+          <div className="control-icon comment-icon" onClick={handleCommentToggle}>
+            <img src={comment} alt="comment" />
+            <span>{commentCount}</span>
+          </div>
+          <div className="control-icon bookmark-icon" onClick={handleBookmark}>
+            <img src={favorite} alt="bookmark" />
+          </div>
+          <div className="control-icon share-icon" onClick={handleShare}>
+            <img src={share} alt="share" />
+          </div>
+        </div>
       </div>
     </div>
   );
