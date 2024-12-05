@@ -1,69 +1,95 @@
-import React, { useRef, useState, useEffect } from 'react';
-import './Body.css';
-import dharman from './assets/dharman.mp4';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import Container from 'react-bootstrap/Container';
+import Navbar from 'react-bootstrap/Navbar';
+import Nav from 'react-bootstrap/Nav';
+import NavDropdown from 'react-bootstrap/NavDropdown';
+import { jwtDecode } from 'jwt-decode';
+import img from './assets/tiktok.png'; // Import the image correctly
+import { FaSearch } from 'react-icons/fa'; // Import the search icon
+import './Dashboard.css';
+import { Body } from './Body'; // Import the Body component
 
-export function Body() {
-  const videoRef = useRef(null);
-  const [isPlaying, setIsPlaying] = useState(true);
+function Dashboard() {
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
 
-  // Toggle play/pause state when the video is clicked
-  const handleVideoClick = () => {
-    const videoElement = videoRef.current;
-    if (videoElement.paused) {
-      videoElement.play();
-      setIsPlaying(true);
-    } else {
-      videoElement.pause();
-      setIsPlaying(false);
+  /* Verify if User In-Session in LocalStorage */
+  useEffect(() => {
+    const fetchDecodedUserID = async () => {
+      try {
+        const response = JSON.parse(localStorage.getItem('token'));
+        setUser(response.data);
+
+        const decodedToken = jwtDecode(response.data.token);
+        setUser(decodedToken);
+      } catch (error) {
+        navigate('/login');
+      }
+    };
+
+    fetchDecodedUserID();
+  }, [navigate]);
+
+  /* Performs Logout Method */
+  const handleLogout = async () => {
+    try {
+      localStorage.removeItem('token');
+      navigate('/login');
+    } catch (error) {
+      console.error('Logout failed:', error);
     }
   };
 
-  useEffect(() => {
-    const videoElement = videoRef.current;
-    videoElement.loop = true;
-    if (isPlaying) {
-      videoElement.play();
-    } else {
-      videoElement.pause();
-    }
-  }, [isPlaying]);
-
   return (
-    <div className="main-container">
-      <div className="sidebar">
-        <h2>For You</h2>
-        <h2>Explore</h2>
-        <h2>Following</h2>
-        <h2>Live</h2>
-        <h2>Profile</h2>
-      </div>
-
-      <div className="divider"></div>
-
-      <div className="content">
-        <div 
-          className={`video-container ${isPlaying ? '' : 'paused'}`} 
-          onClick={handleVideoClick}
-        >
-          <video 
-            className="dharman" 
-            ref={videoRef} 
-            autoPlay 
-            loop 
-            muted={false}
-          >
-            <source src={dharman} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-          {!isPlaying && (
-            <div className="pause-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="50" height="50">
-                <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" fill="white" />
-              </svg>
+    <>
+      <Navbar bg="light" data-bs-theme="light">
+        <Container className="d-flex justify-content-between align-items-center">
+          {/* Logo and Title Section */}
+          <Navbar.Brand href="#home" className="d-flex align-items-center">
+            <img src={img} alt="Tiktok Logo" className="navbar-logo" />
+            <span className="navbar-text ms-2">TOKTOK</span>
+          </Navbar.Brand>
+          
+          {/* Search Bar with Logo inside */}
+          <div className="d-flex mx-auto" style={{ flex: 1, justifyContent: 'center' }}>
+            <div className="search-container">
+              <input
+                type="text"
+                className="search-input"
+                placeholder="Search..."
+                aria-label="Search"
+              />
+              <button type="button" className="search-btn">
+                <FaSearch />
+              </button>
             </div>
-          )}
-        </div>
-      </div>
-    </div>
+          </div>
+
+          {/* Right-aligned Navbar Items */}
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="ms-auto">
+              <NavDropdown
+                title={user ? `${user.username}` : 'More'}
+                id="basic-nav-dropdown"
+                align="end"
+              >
+                <NavDropdown.Item href="#">Profile</NavDropdown.Item>
+                <NavDropdown.Item href="#">Settings</NavDropdown.Item>
+                <NavDropdown.Item href="#" onClick={handleLogout}>
+                  Logout
+                </NavDropdown.Item>
+              </NavDropdown>
+            </Nav>
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
+
+      {/* Body Component */}
+      <Body />
+    </>
   );
 }
+
+export default Dashboard;
