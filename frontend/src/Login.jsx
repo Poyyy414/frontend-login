@@ -25,13 +25,23 @@ function LoginSignup() {
     const fetchUser = async () => {
       try {
         const token = JSON.parse(localStorage.getItem('token'));
-        if (token) {
-          setUser(token.data);
-          navigate('/dashboard');
+        if (!token) throw new Error('No token found');
+
+        // Validate token with backend
+        const response = await axios.get(`${API_ENDPOINT}/auth/verify`, {
+          headers: { Authorization: `Bearer ${token.data}` },
+        });
+
+        if (response.data.success) {
+          setUser(response.data.user); // Update user state
+          navigate('/dashboard'); // Redirect to dashboard
         } else {
-          throw new Error('No token found');
+          throw new Error('Invalid token');
         }
       } catch (error) {
+        // Clear invalid token and redirect to login
+        localStorage.removeItem('token');
+        setUser(null);
         navigate('/login');
       }
     };
@@ -56,7 +66,7 @@ function LoginSignup() {
         password,
       });
 
-      localStorage.setItem('token', JSON.stringify(response));
+      localStorage.setItem('token', JSON.stringify(response.data));
       setError('');
       navigate('/dashboard');
     } catch (error) {
@@ -81,7 +91,7 @@ function LoginSignup() {
         password,
       });
 
-      localStorage.setItem('token', JSON.stringify(response));
+      localStorage.setItem('token', JSON.stringify(response.data));
       setError('');
       navigate('/dashboard');
     } catch (error) {
@@ -102,9 +112,8 @@ function LoginSignup() {
       </Navbar>
 
       <div>
-  <img className="background-image" src={img} alt="Background Image" />
-</div>
-
+        <img className="background-image" src={img} alt="Background Image" />
+      </div>
 
       {/* Login/Signup Form */}
       <Container className="mt-5">

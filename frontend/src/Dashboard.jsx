@@ -5,7 +5,7 @@ import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown';
-import { jwtDecode } from 'jwt-decode';
+import jwtDecode from 'jwt-decode'; // Ensure correct import for decoding
 import img from './assets/tiktok.png'; // Import the image correctly
 import { FaSearch } from 'react-icons/fa'; // Import the search icon
 import './Dashboard.css';
@@ -19,12 +19,15 @@ function Dashboard() {
   useEffect(() => {
     const fetchDecodedUserID = async () => {
       try {
-        const response = JSON.parse(localStorage.getItem('token'));
-        setUser(response.data);
+        const token = JSON.parse(localStorage.getItem('token'));
+        if (!token) {
+          throw new Error('No token found');
+        }
 
-        const decodedToken = jwtDecode(response.data.token);
+        const decodedToken = jwtDecode(token.data);
         setUser(decodedToken);
       } catch (error) {
+        console.error('Session error or invalid token:', error);
         navigate('/login');
       }
     };
@@ -35,8 +38,9 @@ function Dashboard() {
   /* Performs Logout Method */
   const handleLogout = async () => {
     try {
-      localStorage.removeItem('token');
-      navigate('/login');
+      localStorage.removeItem('token'); // Clear token from localStorage
+      setUser(null); // Clear user state
+      navigate('/login'); // Redirect to login
     } catch (error) {
       console.error('Logout failed:', error);
     }
@@ -51,7 +55,7 @@ function Dashboard() {
             <img src={img} alt="Tiktok Logo" className="navbar-logo" />
             <span className="navbar-text ms-2">TOKTOK</span>
           </Navbar.Brand>
-          
+
           {/* Search Bar with Logo inside */}
           <div className="d-flex mx-auto" style={{ flex: 1, justifyContent: 'center' }}>
             <div className="search-container">
